@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Simple Reaction Time Task</title>
+	<script src="jspsych.js"></script>
+	<script src="plugins/canvas-plugin.js"></script> <!-note the custom plugin->
+	<link href="css/jspsych.css" rel="stylesheet" type="text/css"></link>
+</head>
+<body>
+</body>
+<script>
+	var timeline = [];
+
+	//set trial data; note that the stimulus has two parameters
+	var trials = [
+	{stimulus: {color: "green", radius: 50}, data: {correct_response: 'f'}},
+	{stimulus: {color: "red", radius: 100}, data: {correct_response: 'j'}}
+	];
+	
+	
+	var test = {
+		type: "canvas-plugin",
+		choices: ['f', 'j'],
+		stimulus: jsPsych.timelineVariable('stimulus'),
+		data: jsPsych.timelineVariable('data'),
+		prompt: 'F or J?',
+		on_finish: function(data){
+			data.correct = data.key_press == jsPsych.pluginAPI.convertKeyCharacterToKeyCode(data.correct_response);
+		},
+	}
+
+	var test_procedure = {
+	timeline: [test],
+	timeline_variables: trials,
+	repetitions: 1
+	}
+	timeline.push(test_procedure)
+	
+	
+	jsPsych.init({
+	timeline: timeline,
+	on_finish: function() {
+	  jsPsych.data.displayData();
+	}
+	});
+	</script>
+</html>
